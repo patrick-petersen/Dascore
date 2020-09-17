@@ -98,10 +98,44 @@ end
 function GG.GetScenarioPlayers(...)
 	d("calling FixScenarioStats")
 	if GG.SafeToUpdate() == true then
-		return GG.SAVE.Scenario[GG.selected_scenario]
+		return GG.FixScenarioStatsTemporaryFix(GG.SAVE.Scenario[GG.selected_scenario])
 	else
 		return GG.Hook_GameData_GetScenarioPlayers(...)
   end
+end
+
+--Temporary fix for new mitigation & MMR stats
+function GG.FixScenarioStatsTemporaryFix(stats)
+	d("calling FixScenarioStatsTemporaryFix")
+	local stats_copy = {}
+	GG.Func.CopyTable(stats, stats_copy)
+	for k, v in ipairs(stats_copy) do
+		--old stats = new stat in that position
+		--solokills = protection
+		--experience = objectivescore
+		--renown = mmr
+		d("stats[" .. k .."]: ", v, "------------------------")
+
+		if(v["protection"]  ~= nil ) then
+			d("adding protection")
+			v["old_solokills"]=v["solokills"]
+			v["solokills"]=v["protection"]
+		end
+
+		if(v["objectivescore"] ~= nil ) then
+			d("adding objectivescore")
+			v["old_experience"]=v["experience"]
+			v["experience"]=v["objectivescore"]
+		end
+
+		if(v["mmr"] ~= nil ) then
+			d("adding mmr")
+			v["old_renown"]=v["renown"]
+			v["renown"]=v["mmr"]
+		end
+	end
+	d(stats_copy)
+	return stats_copy
 end
 
 ----------[Scenario queue button functions]----------------------------------------------

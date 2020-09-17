@@ -1,0 +1,249 @@
+<Interface xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../Interface.xsd">
+  <Scripts>
+    <Script file="DascoreWin2.lua" />
+  </Scripts>
+  <Windows>
+
+    <!-- Main window -->
+    <Window name="DascoreWin2Window" inherits="EA_Window_Default" layer="secondary" movable="true">
+			<Size>
+				<AbsPoint x="700" y="965"/>
+			</Size>
+      <!-- Single eventhandler statements. Events are linked to functions (in lua-script) by the calling element name. --> 
+      <EventHandlers>
+        <EventHandler event="OnLButtonUp" function="DascoreWin2.OnLButtonUp" />
+        <EventHandler event="OnRButtonUp" function="DascoreWin2.OnRButtonUp" />
+        <EventHandler event="OnShown" function="DascoreWin2.OnShown" />
+      </EventHandlers>
+      <Windows>
+
+        <!-- Titlebar, CloseButton, Background -->
+        <Window name="$parentTitleBar" inherits="EA_TitleBar_Default" autoresize="true" />
+        <Button name="$parentCloseButton" inherits="EA_Button_DefaultWindowClose" />
+        <Window name="$parentBackground" inherits="EA_Window_DefaultTooltipBackground" />
+        
+        <!-- Arrow Image Definitions -->
+        <DynamicImage name="$parentHeaderUp" texture="list_up_arrow" handleinput="false" layer="secondary" >
+            <Size>
+                <AbsPoint x="23" y="28" />
+            </Size>
+        </DynamicImage>
+
+        <DynamicImage name="$parentHeaderDown" texture="list_down_arrow" handleinput="false" layer="secondary" >
+            <Size>
+                <AbsPoint x="23" y="28" />
+            </Size>
+        </DynamicImage>
+        
+        <HorizontalResizeImage name="$parentDivider" inherits="DefaultWindowRule" layer="popup">
+            <Size>
+                <AbsPoint x="670" y="1" />
+            </Size>
+            <Anchors>
+                <Anchor point="topleft" relativePoint="bottomleft" relativeTo="$parentPlayerList">
+                    <AbsPoint x="0" y="-1" />
+                </Anchor>
+            </Anchors>
+        </HorizontalResizeImage>
+
+				<!-- ListBox for extra stats -->
+				<!-- All the fields used to define this lisbox are generic. This way we can dynamically modify them accroding to options. -->
+				<!-- Maximum of 9 columns, header icons and header buttons. If less used then they are hidden using lua-scripts.-->
+				<ListBox name="$parentPlayerList" scrollbar="ScenarioSummaryVertScroll" rowdef="DascoreWin2WindowTemplateListboxRow" visiblerows="23" rowcount="100" rowspacing="2">
+					<Size>
+						<AbsPoint x="700" y="600"/>
+					</Size>
+					<Anchors>
+						<Anchor point="topleft" relativePoint="topleft" relativeTo="">
+							<AbsPoint x="10" y="288"/>
+						</Anchor>
+						<Anchor point="bottomright" relativePoint="bottomright" relativeTo="">
+							<AbsPoint x="0" y="-25"/>
+						</Anchor>
+					</Anchors>
+					<ListData table="DascoreWin2.playersData" populationfunction="DascoreWin2.UpdatePlayerRow">
+						<ListColumns>
+							<ListColumn windowname="Col1Label" variable="col1" format="wstring" /> <!-- always name -->
+							<ListColumn windowname="Col2Label" variable="col2" format="number" style="comma" />
+							<ListColumn windowname="Col3Label" variable="col3" format="number" style="comma" />
+							<ListColumn windowname="Col4Label" variable="col4" format="number" style="comma" />
+							<ListColumn windowname="Col5Label" variable="col5" format="number" style="comma" />
+							<ListColumn windowname="Col6Label" variable="col6" format="number" style="comma" />
+							<ListColumn windowname="Col7Label" variable="col7" format="number" style="comma" />
+							<ListColumn windowname="Col8Label" variable="col8" format="number" style="comma" />
+							<ListColumn windowname="Col9Label" variable="col9" format="number" style="comma" />
+              <!--Maximum 9 columns -->
+            </ListColumns>
+					</ListData>
+				</ListBox>
+      </Windows>
+    </Window> <!-- name="DascoreWin2Window" -->
+    <!-- Main window ends here and the rest are templates-->
+
+
+    <!-- Column template for listbox rows template-->
+    <Window name="DascoreWin2WindowTemplateListboxRowColumn">
+      <Size>
+        <AbsPoint x="100" y="26"/>
+      </Size>
+      <Windows>
+        <Label name="$parentLabel" maxchars="20" font="font_clear_default" textalign="right" warnOnTextCropped="false">
+          <Anchors>
+            <Anchor point="topleft" relativePoint="topleft" relativeTo=""/>
+            <Anchor point="bottomright" relativePoint="bottomright" relativeTo=""/>
+          </Anchors>
+        </Label>
+      </Windows>
+    </Window>
+
+    <!-- Row template for listbox -->
+    <Window name="DascoreWin2WindowTemplateListboxRow" savesettings="false">
+      <Size>
+        <AbsPoint x="660" y="26"/>
+      </Size>
+      <Windows>
+        <!-- Selected Player Highlight Border -->
+        <FullResizeImage name="$parentSelectionBorder" handleinput="false" layer="background" texture="EA_TilableSquareFrame_Highlight">
+            <Size>
+                <AbsPoint x="64" y="64" />
+            </Size>
+            <Sizes>
+                <TopLeft x="10" y="10" />
+                <BottomRight x="10" y="10" />
+                <Middle x="44" y="44" />
+            </Sizes>
+            <TexCoords>
+                <TopLeft x="0" y="0" />
+                <TopCenter x="10" y="0" />
+                <TopRight x="54" y="0" />
+                <MiddleLeft x="0" y="10" />
+                <MiddleCenter x="10" y="10" />
+                <MiddleRight x="54" y="10" />
+                <BottomLeft x="0" y="54" />
+                <BottomCenter x="10" y="54" />
+                <BottomRight x="54" y="54" />
+            </TexCoords>
+            <Anchors>
+                <Anchor point="topleft" relativePoint="topleft" relativeTo="$parent">
+                    <AbsPoint x="-4" y="0"/>
+                </Anchor>
+                <Anchor point="bottomright" relativePoint="bottomright" relativeTo="$parent">
+                    <AbsPoint x="0" y="4"/>
+                </Anchor>
+            </Anchors>
+        </FullResizeImage>
+        
+        <!-- Background which will be colored according to realm. -->
+        <FullResizeImage name="$parentBackground" inherits="EA_FullResizeImage_TintableSolidBackground">
+          <Anchors>
+            <Anchor point="topleft" relativePoint="topleft" relativeTo="$parent" />
+            <Anchor point="bottomright" relativePoint="bottomright" relativeTo="$parent" />
+          </Anchors>
+        </FullResizeImage>
+        
+        <!-- Column labels -->
+        <!-- First column is for name. -->
+        <Window name="$parentCol1" inherits="DascoreWin2WindowTemplateListboxRowColumn">
+          <Anchors>
+            <Anchor point="left" relativePoint="left" relativeTo="">
+              <AbsPoint x="5" y="6"/>
+            </Anchor>
+          </Anchors>
+          <Windows>
+            <Label name="$parentLabel" maxchars="40" font="font_clear_default" textalign="left" warnOnTextCropped="false">
+              <Anchors>
+                <Anchor point="topleft" relativePoint="topleft" relativeTo=""/>
+                <Anchor point="bottomright" relativePoint="bottomright" relativeTo=""/>
+              </Anchors>
+            </Label>
+          </Windows>
+        </Window>
+        <!-- All others are for stat numbers. -->
+        <Window name="$parentCol2" inherits="DascoreWin2WindowTemplateListboxRowColumn">
+          <Anchors>
+            <Anchor point="right" relativePoint="left" relativeTo="$parentCol1"/>
+          </Anchors>
+        </Window>
+        <Window name="$parentCol3" inherits="DascoreWin2WindowTemplateListboxRowColumn">
+          <Anchors>
+            <Anchor point="right" relativePoint="left" relativeTo="$parentCol2"/>
+          </Anchors>
+        </Window>
+        <Window name="$parentCol4" inherits="DascoreWin2WindowTemplateListboxRowColumn">
+          <Anchors>
+            <Anchor point="right" relativePoint="left" relativeTo="$parentCol3"/>
+          </Anchors>
+        </Window>
+        <Window name="$parentCol5" inherits="DascoreWin2WindowTemplateListboxRowColumn">
+          <Anchors>
+            <Anchor point="right" relativePoint="left" relativeTo="$parentCol4"/>
+          </Anchors>
+        </Window>
+        <Window name="$parentCol6" inherits="DascoreWin2WindowTemplateListboxRowColumn">
+          <Anchors>
+            <Anchor point="right" relativePoint="left" relativeTo="$parentCol5"/>
+          </Anchors>
+        </Window>
+        <Window name="$parentCol7" inherits="DascoreWin2WindowTemplateListboxRowColumn">
+          <Anchors>
+            <Anchor point="right" relativePoint="left" relativeTo="$parentCol6"/>
+          </Anchors>
+        </Window>
+        <Window name="$parentCol8" inherits="DascoreWin2WindowTemplateListboxRowColumn">
+          <Anchors>
+            <Anchor point="right" relativePoint="left" relativeTo="$parentCol7"/>
+          </Anchors>
+        </Window>
+        <Window name="$parentCol9" inherits="DascoreWin2WindowTemplateListboxRowColumn">
+          <Anchors>
+            <Anchor point="right" relativePoint="left" relativeTo="$parentCol8"/>
+          </Anchors>
+        </Window>
+      </Windows>
+    </Window> <!-- name="DascoreWin2WindowTemplateListboxRow" -->
+    
+    <!-- Label button template for header. -->
+    <!-- These are created dynamically using lua-scripts. -->
+    <Window name="DascoreWin2WindowTemplatebuttongroup" layer="popup" handleinput="true"> <!-- buttongroup = lowercase -->
+      <Size>
+        <AbsPoint x="300" y="30" />
+      </Size>
+      <Windows>
+        <Button name="$parentButtongroup" inherits="EA_Button_ResizeIconFrame" font="font_clear_medium" textalign="center">
+          <Size>
+            <AbsPoint x="280" y="39" />
+          </Size>
+          <Anchors>
+            <Anchor point="topleft" relativePoint="topleft" relativeTo="">
+              <AbsPoint x="10" y="0" />
+            </Anchor>
+          </Anchors>
+        </Button>
+      </Windows>
+    </Window>
+
+    <!-- Sort button template for header. -->
+    <!-- These are created dynamically using lua-scripts. -->
+    <Window name="DascoreWin2WindowTemplateSortButton" layer="popup" handleinput="true">
+      <Size>
+        <AbsPoint x="45" y="36" />
+      </Size>
+      <Windows>
+        <Button name="$parentButton" inherits="DefaultButton" textalign="right" backgroundtexture="EA_ScenarioSummary01_d5" highlighttexture="EA_ScenarioSummary01_d5" font="font_clear_medium">
+          <Anchors>
+            <Anchor point="topleft" relativePoint="topleft" relativeTo=""/>
+            <Anchor point="bottomright" relativePoint="bottomright" relativeTo=""/>
+          </Anchors>
+          <TextColors>
+            <Normal r="255" g="204" b="102" a="255" />
+            <NormalHighlit r="255" g="85" b="0" a="255" />
+            <Pressed r="255" g="204" b="102" a="255" />
+            <PressedHighlit r="255" g="85" b="0" a="255" />
+            <Disabled r="92" g="92" b="92" a="255" />
+          </TextColors>
+        </Button>
+      </Windows>
+    </Window>
+
+  </Windows>
+</Interface>

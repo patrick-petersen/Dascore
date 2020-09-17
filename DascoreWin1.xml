@@ -1,0 +1,128 @@
+<Interface xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../Interface.xsd">
+  <Scripts>
+    <Script file="DascoreWin1.lua" />
+  </Scripts>
+  <Windows>
+
+    <!-- Main window -->
+    <Window name="DascoreWin1Window" inherits="EA_Window_Default" layer="popup" movable="true">
+      <Size>
+        <AbsPoint x="500" y="365" />
+      </Size>
+
+      <!-- Single eventhandler statements. Events are linked to functions (in lua-script) by the calling element name. --> 
+      <EventHandlers>
+        <EventHandler event="OnLButtonUp" function="DascoreWin1.OnLButtonUp" />
+        <EventHandler event="OnRButtonUp" function="DascoreWin1.OnRButtonUp" />
+        <EventHandler event="OnShown" function="DascoreWin1.OnShown" />
+      </EventHandlers>
+      <Windows>
+
+        <!-- Titlebar, CloseButton, OptionsButton, ExtraStatsButton, Background(2) -->
+        <Window name="$parentTitleBar" inherits="EA_TitleBar_Default" autoresize="true" />
+        <Button name="$parentCloseButton" inherits="EA_Button_DefaultWindowClose" />
+        <Button name="$parentOptionsButton" inherits="EA_Button_DefaultWindowClose" font="font_clear_medium_bold">
+          <Anchors>
+            <Anchor point="topleft" relativePoint="topright" relativeTo="$parentCloseButton">
+              <AbsPoint x="0" y="0"/>
+            </Anchor>
+          </Anchors>
+        </Button>
+        <Button name="$parentExtraButton" inherits="EA_Button_DefaultWindowClose" font="font_clear_medium_bold">
+          <Anchors>
+            <Anchor point="topleft" relativePoint="topright" relativeTo="$parentOptionsButton">
+              <AbsPoint x="0" y="0"/>
+            </Anchor>
+          </Anchors>
+        </Button>
+        <Window name="$parentBackground" inherits="EA_Window_DefaultBackgroundFrame" />
+        <Window name="$parentBarBackground" inherits="EA_Window_DefaultButtonBottomFrame" layer="background" >
+          <Size>
+            <AbsPoint x="0" y="30" />
+          </Size>
+        </Window>
+
+        <!-- ListBox for list of saved scenarios -->
+        <ListBox name="$parentList" color="255, 255, 255, 0" scrollbar="EA_ScrollBar_DefaultVerticalChain" rowdef="DascoreWin1WindowTemplateListboxRow" visiblerows="10" rowcount="150" rowspacing="0">
+          <Anchors>
+            <Anchor point="topleft" relativePoint="topleft" relativeTo="$parentBackground">
+              <AbsPoint x="5" y="10"/>
+            </Anchor>
+            <Anchor point="bottomright" relativePoint="bottomright" relativeTo="$parentBackground">
+              <AbsPoint x="0" y="-20"/>
+            </Anchor>
+          </Anchors>
+          <ListData table="DascoreWin1.Listdata" populationfunction="">
+            <ListColumns>
+              <ListColumn windowname="Title"   variable="Title"         format="wstring"/>
+            </ListColumns>
+          </ListData>
+        </ListBox>
+          
+      </Windows>
+    </Window> <!-- name="DascoreWin1Window" -->
+    <!-- Main window ends here and the rest are templates-->
+
+    <!-- Row template for listbox -->
+    <Button name="DascoreWin1WindowTemplateListboxRow" inherits="EA_Button_ResizeIconFrame_NoNormalImage" drawchildrenfirst="true">
+      <Size>
+        <AbsPoint x="470" y="30" />
+      </Size>
+      <Windows>
+        <Label name="$parentTitle" font="font_clear_medium" textalign="left" handleinput="true" autoresize="true" layer="popup">
+          <Size>
+            <AbsPoint x="450" y="25" />
+          </Size>
+          <Anchors>
+            <Anchor point="topleft" relativePoint="topleft" relativeTo="">
+              <AbsPoint x="10" y="5" />
+            </Anchor>
+          </Anchors>
+        </Label>
+      </Windows>
+    </Button>
+
+    <!-- Checkbox template for options window. -->
+    <!-- These are created dynamically using lua-scripts. -->
+    <Window name="DascoreWin1WindowTemplatecheckbox" layer="background" handleinput="true"> <!-- checkbox = lowercase -->
+      <Size>
+        <AbsPoint x="400" y="25" />
+      </Size>
+      <Windows>
+        <Button name="$parentCheckbox" inherits="EA_Button_DefaultCheckBox"/>
+        <Label name="$parentLabel" font="font_clear_medium" textalign="left" handleinput="true" autoresize="true" layer="popup">
+          <Size>
+            <AbsPoint x="320" y="25" />
+          </Size>
+          <Color r="255" g="255" b="255" a="255" />
+          <Anchors>
+            <Anchor point="right" relativePoint="left" relativeTo="$parentCheckbox">
+              <AbsPoint x="10" y="0" />
+            </Anchor>
+          </Anchors>
+        </Label>
+      </Windows>
+    </Window> 
+
+    <!-- Label button template for options window. -->
+    <!-- These are created dynamically using lua-scripts. -->
+    <Window name="DascoreWin1WindowTemplatebuttongroup" layer="popup" handleinput="true"> <!-- buttongroup = lowercase -->
+      <Size>
+        <AbsPoint x="300" y="30" />
+      </Size>
+      <Windows>
+        <Button name="$parentButtongroup" inherits="EA_Button_ResizeIconFrame" font="font_clear_medium" textalign="center">
+          <Size>
+            <AbsPoint x="280" y="39" />
+          </Size>
+          <Anchors>
+            <Anchor point="topleft" relativePoint="topleft" relativeTo="">
+              <AbsPoint x="10" y="0" />
+            </Anchor>
+          </Anchors>
+        </Button>
+      </Windows>
+    </Window>
+
+  </Windows>
+</Interface>
